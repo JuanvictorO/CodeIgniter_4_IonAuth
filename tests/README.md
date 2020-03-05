@@ -1,9 +1,13 @@
-# Running System Tests
+# Running Application Tests
 
 This is the quick-start to CodeIgniter testing. Its intent is to describe what 
-it takes to set up your system and get it ready to run unit tests. 
+it takes to set up your application and get it ready to run unit tests. 
 It is not intended to be a full description of the test features that you can 
-use to test your application. Those details can be found in the documentation. 
+use to test your application. Those details can be found in the documentation.
+
+## Resources
+* [CodeIgniter 4 User Guide on Testing](https://codeigniter4.github.io/userguide/testing/index.html)
+* [PHPUnit docs](https://phpunit.readthedocs.io/en/8.3/index.html)
 
 ## Requirements
 
@@ -41,17 +45,9 @@ The entire test suite can be run by simply typing one command-line command from 
 	> ./phpunit
 
 You can limit tests to those within a single test directory by specifying the 
-directory name after phpunit. All core tests are stored under **tests/system**.
+directory name after phpunit. 
 
-	> ./phpunit tests/system/HTTP/
-
-Individual tests can be run by including the relative path to the test file.
-
-	> ./phpunit tests/system/HTTP/RequestTest
-
-You can run the tests without running the live database tests.
-
-	> ./phpunit --exclude-group DatabaseLive
+	> ./phpunit app/Models
 
 ## Generating Code Coverage
 
@@ -78,3 +74,35 @@ The normal practice would be to copy ``phpunit.xml.dist`` to ``phpunit.xml``
 (which is git ignored), and to tailor it as you see fit.
 For instance, you might wish to exclude database tests, or automatically generate 
 HTML code coverage reports.
+
+## Test Cases
+
+Every test needs a *test case*, or class that your tests extend. CodeIgniter 4
+provides a few that you may use directly:
+* `CodeIgniter\Test\CIUnitTestCase` - for basic tests with no other service needs
+* `CodeIgniter\Test\CIDatabaseTestCase` - for tests that need database access
+
+Most of the time you will want to write your own test cases to hold functions and services
+common to your test suites.
+
+## Creating Tests
+
+All tests go in the **tests/** directory. Each test file is a class that extends a
+**Test Case** (see above) and contains methods for the individual tests. These method
+names must start with the word "test" and should have descriptive names for precisely what
+they are testing:
+`testUserCanModifyFile()` `testOutputColorMatchesInput()` `testIsLoggedInFailsWithInvalidUser()`
+
+Writing tests is an art, and there are many resources available to help learn how.
+Review the links above and always pay attention to your code coverage.
+
+### Database Tests
+
+Tests can include migrating, seeding, and testing against a mock or live<sup>1</sup> database.
+Be sure to modify the test case (or create your own) to point to your seed and migrations
+and include any additional steps to be run before tests in the `setUp()` method.
+
+<sup>1</sup> Note: If you are using database tests that require a live database connection
+you will need to rename **phpunit.xml.dist** to **phpunit.xml**, uncomment the database
+configuration lines and add your connection details. Prevent **phpunit.xml** from being
+tracked in your repo by adding it to **.gitignore**.
